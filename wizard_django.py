@@ -50,28 +50,51 @@ class DjangoWizard(ctk.CTk):
     #Função para configurar o 'settings.py'.
     def configurar_settings(self):
         caminho_settings = os.path.abspath(os.path.join("setup", "settings.py"))
+        caminho_env = ".env"
         
         if not os.path.exists(caminho_settings):
             return False
 
         linhas_modificadas = []
+        secret_key_valor = ""
+        
         try:
             with open(caminho_settings, 'r', encoding='utf-8') as f:
                 for linha in f:
-                    if linha.strip().startswith("LANGUAGE_CODE ="):
+                    if linha.strip().startswith("SECRET_KEY ="):
+                        secret_key_valor = linha.split("=")[1].strip().strip("'\"")
+                        linhas_modificadas.append("SECRET_KEY = str(os.getenv('SECRET_KEY'))\n")
+                    
+                    elif linha.strip().startswith("LANGUAGE_CODE ="):
                         linhas_modificadas.append("LANGUAGE_CODE = 'pt-br'\n")
+                    
                     elif linha.strip().startswith("TIME_ZONE ="):
                         linhas_modificadas.append("TIME_ZONE = 'America/Sao_Paulo'\n")
+                    
                     else:
                         linhas_modificadas.append(linha)
 
+            imports_necessarios = [
+                "import os\n",
+                "from dotenv import load_dotenv\n",
+                "load_dotenv()\n",
+                "\n" 
+            ]
+
+            linhas_finais = imports_necessarios + linhas_modificadas
+
             with open(caminho_settings, 'w', encoding='utf-8') as f:
-                f.writelines(linhas_modificadas)
+                f.writelines(linhas_finais)
+
+            if secret_key_valor:
+                with open(caminho_env, 'w', encoding='utf-8') as env_f:
+                    env_f.write(f"SECRET_KEY='{secret_key_valor}'\n")
+            
             return True
-        except:
+        except Exception as e:
+            print(f"Erro na configuração: {e}")
             return False
 
-    #Função para começar a instalar e configurar o ambiente.
     def iniciar_setup(self):
         nome_projeto = self.entry_nome.get().strip()
         
@@ -91,10 +114,15 @@ class DjangoWizard(ctk.CTk):
             if self.executar_comando("python -m venv venv", "Criando Ambiente Virtual..."):
                 self.progress.set(0.40)
             
-            #Instalando Django.
+            #Ativando o Venv e instalando o Django.
             cmd_django = r"venv\Scripts\activate && pip install django"
             if self.executar_comando(cmd_django, "Instalando Django..."):
                 self.progress.set(0.60)
+
+            #Instalando a biblioteca 'python-dotenv' e criando um arquivo 'requirements.txt' para terminar de configurar
+            cmd_django =r"venv\Scripts\activate && pip install python-dotenv && pip freeze > requirements.txt"
+            if self.executar_comando(cmd_django, "Instalando DotEnv e criando o arquivo requirements.txt.")
+                self.progress.set(0.70) 
 
             #Criando Projeto Django.
             cmd_init = r"venv\Scripts\activate && django-admin startproject setup ."
