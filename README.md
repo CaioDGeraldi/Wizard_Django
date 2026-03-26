@@ -1,5 +1,5 @@
 # Django Setup Wizard ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)<br>
-O Django Setup Wizard é uma ferramenta de automação de ambiente desenvolvida em Python. O objetivo deste software é simplificar a inicialização de projetos Django, automatizando tarefas repetitivas de terminal através de uma interface gráfica intuitiva.
+O Django Setup Wizard é uma ferramenta de automação de ambiente desenvolvida em Python. O objetivo deste software é simplificar a       inicialização de projetos Django, automatizando tarefas repetitivas de terminal através de uma interface gráfica intuitiva.
 
 O assistente gerencia a criação de diretórios, configuração de ambientes isolados (Virtual Environments) e a instalação de dependências estruturais.
 
