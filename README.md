@@ -32,6 +32,8 @@ O assistente segue o seguinte fluxo de operações:
 
 * Ambiente: Executa python -m venv venv.
 
+* seia de natal
+
 * Dependências: Ativa o ambiente e executa pip install django.
 
 * Bootstrap: Executa django-admin startproject para gerar a estrutura inicial do projeto.
